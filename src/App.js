@@ -1,25 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment, useState, useEffect } from 'react';
+import Form from './components/Form';
+import axios from 'axios';
+
 
 function App() {
+
+  //Definir state 
+  const [searchLyrics, setSearchLyrics] = useState({});
+  const [lyrics, setLyrics] = useState('');
+
+  useEffect(() => {
+   if(Object.keys(searchLyrics).length === 0) return; //forma de verificar si un objeto esta vacio
+   const lyricsAPI = async () =>{
+     const {artist, song} = searchLyrics;
+     const url = `https://api.lyrics.ovh/v1/${artist}/${song}`;
+  
+     const result = await axios(url);
+     setLyrics(result.data.lyrics);
+   }
+   lyricsAPI();
+  }, [searchLyrics])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <Form 
+        setSearchLyrics = {setSearchLyrics}
+      />
+
+    </Fragment>
   );
 }
 
